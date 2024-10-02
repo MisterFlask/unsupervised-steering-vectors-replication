@@ -4,7 +4,7 @@ MODEL_NAME = "meta-llama/Llama-3.2-1B-Instruct"
 TOKENIZER_NAME = "meta-llama/Llama-3.2-1B-Instruct" 
 
 ORTHOGONAL_VECTORS = True
-NUM_VECTORS = 16
+NUM_VECTORS = 32
 TOKEN_IDXS = slice(-2,None)
 NUM_STEPS = 300
 POWER = 2
@@ -196,7 +196,7 @@ def train_and_evaluate(config=None):
             }
 
         # Use ThreadPoolExecutor with limited workers to avoid LLM race conditions
-        max_workers = 4  # Adjust based on system capability and rate limits
+        max_workers = 12  # Adjust based on system capability and rate limits
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {executor.submit(evaluate_vector, idx, vector): idx for idx, vector in enumerate(steered_model.learned_vectors)}
             for future in as_completed(futures):
@@ -239,7 +239,7 @@ def train_and_evaluate(config=None):
             wandb.log({
                 "best_combined_score": best_combined_score,
                 "best_vector_index": all_vector_scores[all_vector_scores.index(max(all_vector_scores, key=lambda x: x['combined_score']))]["vector_index"],
-                "best_vector_coherence": all_vector_scores[all_vector_scores.index(max(all_vector_scores, key=lambda x: x['combined_score']))]["coherence"],
+                "best_vector_coherence": all_vector_scores[all_vector_scores.index(max(all_vector_scores, key=lambda x: x['Wcombined_score']))]["coherence"],
                 "best_vector_difference_from_normal": all_vector_scores[all_vector_scores.index(max(all_vector_scores, key=lambda x: x['combined_score']))]["difference_from_normal"]
             })
         else:
@@ -253,7 +253,9 @@ sweep_configuration = {
     'method': 'grid',
     'metric': {'name': 'best_combined_score', 'goal': 'maximize'},
     'parameters': {
-        'R': {'values': [1.0, 2.0, 5.0, 10.0]}
+        'input_layer': {'values': [4, 5, 6]},
+        'output_layer': {'values': [9, 10, 11, 12]},
+        'R': 0.7
     }
 }
 

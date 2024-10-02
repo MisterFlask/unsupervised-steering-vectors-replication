@@ -348,8 +348,6 @@ def train_and_evaluate(config=None):
     with wandb.init(config=config):
         config = wandb.config
 
-        config.input_layer = 5 # hardcoded, for now
-        config.output_layer = 11 # hardcoded, for now
 
         print("Initializing SteeredModel")
         steered_model = SteeredModel(
@@ -431,12 +429,14 @@ def train_and_evaluate(config=None):
             print("ERROR: Best vector not found")
 
     print("Finished train_and_evaluate function")
+
     wandb.finish()
 
 # Define the sweep configuration
 sweep_configuration = {
     'method': 'random',
     'metric': {'name': 'best_combined_score', 'goal': 'maximize'},
+    
     'parameters': {
         'R': {'min': 0.6, 'max': 1.0}
     }
