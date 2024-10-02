@@ -1,0 +1,7 @@
+# Ignore all wandb files and directories
+wandb/
+*.wandb
+wandb-debug.log
+wandb-metadata.json
+# Ignore everything in notebooks/wandb
+notebooks/wandb/

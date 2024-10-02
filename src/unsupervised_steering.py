@@ -26,6 +26,8 @@ class SteeredModel():
                 self.layers_name = "transformer.h"
             elif hasattr(self.model, "gpt_neox"): # pythia-like
                 self.layers_name = "gpt_neox.layers"
+            elif hasattr(model, 'name_or_path') and "meta-llama/Llama" in model.name_or_path:
+                self.layers_name = "model.layers"
             elif hasattr(self.model, "model"):  # mistral-like
                 self.layers_name =  "model.model.layers"
             else:
